@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useMusic } from '@/context/MusicContext';
 
 const songs = [
-  { title: 'Untukmu', artist: 'Chrisye', id: 'cYYiReO2Zlc', emoji: '🎵', note: 'lagu kita', color: '#f9a8c9' },
+  { title: 'Untukmu', artist: 'Afgan', id: 'cYYiReO2Zlc', emoji: '🎵', note: 'lagu kita', color: '#f9a8c9' },
   { title: 'Kau Adalah', artist: 'Isyana Sarasvati', id: '-Cu0ihE490s', emoji: '🎶', note: 'kamu banget', color: '#c5a9d4' },
   { title: 'Bukan Cinta Biasa', artist: 'Afgan', id: 'nshdkoeu_fY', emoji: '🌸', note: 'bukan biasa aja', color: '#f9c89a' },
   { title: 'Separuh Aku', artist: 'NOAH', id: 'b0ZBBjViV8Y', emoji: '💗', note: 'separuh aku', color: '#a8d8c8' },

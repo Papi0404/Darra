@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useRef, useCallb
 
 const DEFAULT_SONG = {
   title: 'Untukmu',
-  artist: 'Chrisye',
+  artist: 'Afgan',
   id: 'cYYiReO2Zlc'
 };
 
