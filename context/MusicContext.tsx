@@ -34,19 +34,35 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   const [playing, setPlaying] = useState(false);
   const [currentSong, setCurrentSong] = useState<Song>(DEFAULT_SONG);
   const [ready, setReady] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
   const playerRef = useRef<any>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const hasInteracted = useRef(false);
+  const containerCreated = useRef(false);
 
   const initPlayer = useCallback(() => {
-    if (!containerRef.current || playerRef.current) return;
     if (typeof window === 'undefined') return;
+    if (playerRef.current) return;
     if (!window.YT || !window.YT.Player) return;
 
+    // Create a container div OUTSIDE of React's DOM tree
+    // This prevents React from trying to reconcile the YouTube iframe
+    if (!containerCreated.current) {
+      const container = document.createElement('div');
+      container.id = 'yt-player-container';
+      container.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;bottom:0;left:0;overflow:hidden;z-index:-1;';
+      document.body.appendChild(container);
+
+      const playerDiv = document.createElement('div');
+      playerDiv.id = 'yt-player';
+      container.appendChild(playerDiv);
+      containerCreated.current = true;
+    }
+
+    const el = document.getElementById('yt-player');
+    if (!el) return;
+
     try {
-      playerRef.current = new window.YT.Player(containerRef.current, {
+      playerRef.current = new (window.YT.Player as any)('yt-player', {
         height: '1',
         width: '1',
         videoId: DEFAULT_SONG.id,
@@ -80,9 +96,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
               try { sessionStorage.setItem('musicPlaying', 'false'); } catch (e) {}
             }
           },
-          onError: () => {
-            // Silently handle YT errors
-          },
+          onError: () => {},
         },
       });
     } catch (e) {
@@ -91,7 +105,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    setMounted(true);
+    if (typeof window === 'undefined') return;
 
     const handleInteract = () => {
       hasInteracted.current = true;
@@ -101,19 +115,16 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     document.addEventListener('click', handleInteract);
     document.addEventListener('keydown', handleInteract);
 
-    // Load YT API
-    if (typeof window !== 'undefined') {
-      if (window.YT && window.YT.Player) {
-        initPlayer();
-      } else {
-        const existingScript = document.querySelector('script[src="https://www.youtube.com/iframe_api"]');
-        if (!existingScript) {
-          const tag = document.createElement('script');
-          tag.src = 'https://www.youtube.com/iframe_api';
-          document.head.appendChild(tag);
-        }
-        (window as any).onYouTubeIframeAPIReady = initPlayer;
+    if (window.YT && window.YT.Player) {
+      initPlayer();
+    } else {
+      const existingScript = document.querySelector('script[src="https://www.youtube.com/iframe_api"]');
+      if (!existingScript) {
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        document.head.appendChild(tag);
       }
+      (window as any).onYouTubeIframeAPIReady = initPlayer;
     }
 
     return () => {
@@ -147,21 +158,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <MusicContext.Provider value={{ playing, currentSong, ready, togglePlay, playSong }}>
-      {mounted && (
-        <div
-          ref={containerRef}
-          style={{
-            position: 'fixed',
-            width: '1px',
-            height: '1px',
-            opacity: 0,
-            pointerEvents: 'none',
-            bottom: 0,
-            left: 0,
-            overflow: 'hidden',
-          }}
-        />
-      )}
       {children}
     </MusicContext.Provider>
   );
