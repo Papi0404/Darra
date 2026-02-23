@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 
 const DEFAULT_SONG = {
-  title: 'Untukmu',
+  title: 'Lenggang-Puspita',
   artist: 'Afgan',
   id: 'cYYiReO2Zlc'
 };
