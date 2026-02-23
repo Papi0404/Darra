@@ -1,12 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMusic } from '@/context/MusicContext';
 
 export default function MusicPlayer() {
   const [visible, setVisible] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const { playing, currentSong, ready, togglePlay } = useMusic();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   return (
     <AnimatePresence>
@@ -23,7 +30,6 @@ export default function MusicPlayer() {
             border: '1px solid rgba(231,84,128,0.25)',
           }}
         >
-          {/* Animated music note */}
           <motion.span
             animate={playing ? { rotate: [0, -10, 10, -10, 0], scale: [1, 1.1, 1] } : {}}
             transition={{ repeat: Infinity, duration: 1.5 }}
@@ -40,14 +46,13 @@ export default function MusicPlayer() {
               {currentSong.title}
             </span>
             <span
-              className="text-[10px] opacity-70 leading-none select-none whitespace-nowrap mt-1"
-              style={{ color: '#4a3728' }}
+              className="text-xs opacity-70 leading-none select-none whitespace-nowrap mt-1"
+              style={{ color: '#4a3728', fontSize: '10px' }}
             >
               {currentSong.artist}
             </span>
           </div>
 
-          {/* Visualizer bars when playing */}
           {playing && (
             <div className="flex items-end gap-0.5 h-4 ml-1">
               {[0, 1, 2, 3].map(j => (
@@ -70,7 +75,6 @@ export default function MusicPlayer() {
               background: playing ? '#e75480' : '#f9a8c9',
               color: 'white',
             }}
-            title={playing ? 'Pause musik' : 'Play musik'}
           >
             {!ready ? '⏳' : playing ? '⏸' : '▶'}
           </button>
@@ -79,7 +83,6 @@ export default function MusicPlayer() {
             onClick={() => setVisible(false)}
             className="text-xs opacity-40 hover:opacity-70 transition-opacity ml-1"
             style={{ color: '#4a3728' }}
-            title="Tutup"
           >
             ✕
           </button>

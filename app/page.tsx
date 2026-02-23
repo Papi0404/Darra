@@ -2,20 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const stickers = [
-  { emoji: '🌸', top: '8%', left: '6%', rotate: -15, delay: 0.8, size: 36 },
-  { emoji: '✨', top: '12%', right: '8%', rotate: 20, delay: 1.0, size: 28 },
-  { emoji: '🎀', top: '70%', left: '5%', rotate: -8, delay: 1.2, size: 32 },
-  { emoji: '💗', top: '75%', right: '6%', rotate: 12, delay: 0.9, size: 38 },
-  { emoji: '🌷', top: '45%', left: '3%', rotate: -20, delay: 1.4, size: 30 },
-  { emoji: '⭐', top: '35%', right: '4%', rotate: 25, delay: 1.1, size: 26 },
-  { emoji: '🎀', top: '20%', left: '85%', rotate: -10, delay: 1.5, size: 24 },
-  { emoji: '💝', top: '88%', left: '30%', rotate: 5, delay: 1.3, size: 28 },
+  { emoji: '🌸', top: '8%', left: '6%', right: undefined, rotate: -15, delay: 0.8, size: 36 },
+  { emoji: '✨', top: '12%', left: undefined, right: '8%', rotate: 20, delay: 1.0, size: 28 },
+  { emoji: '🎀', top: '70%', left: '5%', right: undefined, rotate: -8, delay: 1.2, size: 32 },
+  { emoji: '💗', top: '75%', left: undefined, right: '6%', rotate: 12, delay: 0.9, size: 38 },
+  { emoji: '🌷', top: '45%', left: '3%', right: undefined, rotate: -20, delay: 1.4, size: 30 },
+  { emoji: '⭐', top: '35%', left: undefined, right: '4%', rotate: 25, delay: 1.1, size: 26 },
+  { emoji: '🎀', top: '20%', left: '85%', right: undefined, rotate: -10, delay: 1.5, size: 24 },
+  { emoji: '💝', top: '88%', left: '30%', right: undefined, rotate: 5, delay: 1.3, size: 28 },
 ];
 
 export default function CoverPage() {
+  const router = useRouter();
   const [timeStr, setTimeStr] = useState('');
 
   useEffect(() => {
@@ -46,11 +47,9 @@ export default function CoverPage() {
           className="absolute select-none pointer-events-none"
           style={{
             top: s.top,
-            left: (s as any).left,
-            right: (s as any).right,
+            left: s.left,
+            right: s.right,
             fontSize: s.size,
-            animation: `float ${5 + i * 0.7}s ease-in-out infinite`,
-            animationDelay: `${i * 0.3}s`,
           }}
         >
           {s.emoji}
@@ -108,12 +107,6 @@ export default function CoverPage() {
             fontFamily: 'Dancing Script, cursive',
             fontStyle: 'italic',
             color: '#e75480',
-            background: 'linear-gradient(135deg, #e75480, #f9a8c9, #e75480)',
-            backgroundSize: '200% 100%',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            animation: 'shimmer 3s ease-in-out infinite',
           }}>
             sayaangkuuu
           </span>
@@ -141,7 +134,7 @@ export default function CoverPage() {
             marginBottom: '28px',
           }}
         >
-          Untuk perempuan tercinta — sumber tawa, tenang & rindu
+          Untuk perempuan tercinta — sumber tawa, tenang &amp; rindu
           <br />
           <em style={{ color: '#e75480' }}>dari Januar, dengan segenap hati</em>
         </motion.p>
@@ -160,64 +153,61 @@ export default function CoverPage() {
           <div className="flex-1 h-px" style={{ background: 'linear-gradient(to left, transparent, #e75480)' }} />
         </div>
 
-        {/* Buttons */}
+        {/* Buttons — using motion.div with onClick instead of Link wrapping button */}
         <motion.div
           className="flex flex-col sm:flex-row gap-3 justify-center flex-wrap"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9 }}
         >
-          <Link href="/gallery">
-            <motion.button
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.97 }}
-              className="px-7 py-3 rounded-full font-medium transition-all w-full sm:w-auto"
-              style={{
-                background: 'linear-gradient(135deg, #e75480, #f9a8c9)',
-                color: 'white',
-                fontFamily: 'Caveat, cursive',
-                fontSize: '18px',
-                boxShadow: '0 4px 15px rgba(231,84,128,0.35)',
-                letterSpacing: '0.02em',
-              }}
-            >
-              📸 Buka Scrapbook
-            </motion.button>
-          </Link>
+          <motion.div
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => router.push('/gallery')}
+            className="px-7 py-3 rounded-full font-medium transition-all cursor-pointer text-center"
+            style={{
+              background: 'linear-gradient(135deg, #e75480, #f9a8c9)',
+              color: 'white',
+              fontFamily: 'Caveat, cursive',
+              fontSize: '18px',
+              boxShadow: '0 4px 15px rgba(231,84,128,0.35)',
+              letterSpacing: '0.02em',
+            }}
+          >
+            📸 Buka Scrapbook
+          </motion.div>
 
-          <Link href="/ucapan">
-            <motion.button
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.97 }}
-              className="px-7 py-3 rounded-full font-medium transition-all w-full sm:w-auto"
-              style={{
-                background: 'transparent',
-                color: '#e75480',
-                fontFamily: 'Caveat, cursive',
-                fontSize: '18px',
-                border: '2px solid rgba(231,84,128,0.5)',
-              }}
-            >
-              💌 Baca Pesanku
-            </motion.button>
-          </Link>
+          <motion.div
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => router.push('/ucapan')}
+            className="px-7 py-3 rounded-full font-medium transition-all cursor-pointer text-center"
+            style={{
+              background: 'transparent',
+              color: '#e75480',
+              fontFamily: 'Caveat, cursive',
+              fontSize: '18px',
+              border: '2px solid rgba(231,84,128,0.5)',
+            }}
+          >
+            💌 Baca Pesanku
+          </motion.div>
 
-          <Link href="/menu">
-            <motion.button
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.97 }}
-              className="px-7 py-3 rounded-full font-medium transition-all w-full sm:w-auto"
-              style={{
-                background: 'linear-gradient(135deg, #c5a9d4, #f9a8c9)',
-                color: 'white',
-                fontFamily: 'Caveat, cursive',
-                fontSize: '18px',
-                boxShadow: '0 4px 15px rgba(197,169,212,0.35)',
-              }}
-            >
-              ✨ Jelajahi Semua
-            </motion.button>
-          </Link>
+          <motion.div
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => router.push('/menu')}
+            className="px-7 py-3 rounded-full font-medium transition-all cursor-pointer text-center"
+            style={{
+              background: 'linear-gradient(135deg, #c5a9d4, #f9a8c9)',
+              color: 'white',
+              fontFamily: 'Caveat, cursive',
+              fontSize: '18px',
+              boxShadow: '0 4px 15px rgba(197,169,212,0.35)',
+            }}
+          >
+            ✨ Jelajahi Semua
+          </motion.div>
         </motion.div>
 
         {/* Hint */}

@@ -10,7 +10,7 @@ interface PolaroidCardProps {
   rotation?: number;
   delay?: number;
   onClick: () => void;
-  washiColor?: string;
+  index?: number;
 }
 
 const washiPatterns = [
@@ -28,8 +28,10 @@ export default function PolaroidCard({
   rotation = 0,
   delay = 0,
   onClick,
+  index = 0,
 }: PolaroidCardProps) {
-  const washi = washiPatterns[Math.floor(Math.random() * washiPatterns.length)];
+  // Use index instead of Math.random() to avoid hydration mismatch
+  const washi = washiPatterns[index % washiPatterns.length];
 
   return (
     <motion.div
@@ -62,8 +64,8 @@ export default function PolaroidCard({
     >
       {/* Washi tape on top */}
       <div
-        className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 rounded-sm opacity-85"
-        style={{ background: washi, zIndex: 2 }}
+        className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 rounded-sm"
+        style={{ background: washi, zIndex: 2, opacity: 0.85 }}
       />
 
       {/* Photo area */}
@@ -81,14 +83,6 @@ export default function PolaroidCard({
           fill
           className="object-cover"
           sizes="200px"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.style.display = 'none';
-            const parent = target.parentElement;
-            if (parent) {
-              parent.innerHTML = `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#b08060;font-family:Caveat,cursive;font-size:28px;">📸<span style="font-size:13px;opacity:0.6">${alt}</span></div>`;
-            }
-          }}
         />
       </div>
 

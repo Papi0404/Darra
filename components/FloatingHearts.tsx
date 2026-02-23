@@ -16,8 +16,14 @@ interface Heart {
 
 export default function FloatingHearts() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -34,7 +40,6 @@ export default function FloatingHearts() {
     resize();
     window.addEventListener('resize', resize);
 
-    // Spawn hearts
     const spawnHeart = () => {
       hearts.push({
         x: Math.random() * window.innerWidth,
@@ -84,7 +89,9 @@ export default function FloatingHearts() {
       clearInterval(spawnInterval);
       window.removeEventListener('resize', resize);
     };
-  }, []);
+  }, [mounted]);
+
+  if (!mounted) return null;
 
   return (
     <canvas

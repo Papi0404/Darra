@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import PolaroidCard from '@/components/PolaroidCard';
 import Lightbox from '@/components/Lightbox';
 
@@ -21,15 +21,10 @@ const photos = [
   { src: '/images/dara12.jpeg', caption: 'dan ini, dan ini, dan ini 🌷' },
 ];
 
-// Pre-computed rotations to avoid hydration mismatch
 const ROTATIONS = [-4, 3, -6, 5, -3, 6, -5, 4, -7, 3, -4, 6];
 
-const sectionTitle = {
-  initial: { opacity: 0, y: -20 },
-  animate: { opacity: 1, y: 0 },
-};
-
 export default function GalleryPage() {
+  const router = useRouter();
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const openLightbox = (i: number) => setLightboxIndex(i);
@@ -38,10 +33,7 @@ export default function GalleryPage() {
   const nextPhoto = () => setLightboxIndex(i => (i !== null ? (i + 1) % photos.length : 0));
 
   return (
-    <main
-      className="relative min-h-screen py-20 px-4"
-      style={{ zIndex: 1 }}
-    >
+    <main className="relative min-h-screen py-20 px-4" style={{ zIndex: 1 }}>
       {/* Back button */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
@@ -49,53 +41,45 @@ export default function GalleryPage() {
         transition={{ delay: 0.1 }}
         className="fixed top-5 left-5 z-40"
       >
-        <Link href="/">
-          <motion.button
-            whileHover={{ scale: 1.07, x: -2 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium shadow-md transition-all"
-            style={{
-              background: 'rgba(255,251,245,0.92)',
-              color: '#e75480',
-              fontFamily: 'Caveat, cursive',
-              fontSize: '16px',
-              border: '1px solid rgba(249,168,201,0.5)',
-              backdropFilter: 'blur(8px)',
-            }}
-          >
-            ← Kembali
-          </motion.button>
-        </Link>
+        <motion.div
+          whileHover={{ scale: 1.07, x: -2 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => router.push('/')}
+          className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium shadow-md cursor-pointer"
+          style={{
+            background: 'rgba(255,251,245,0.92)',
+            color: '#e75480',
+            fontFamily: 'Caveat, cursive',
+            fontSize: '16px',
+            border: '1px solid rgba(249,168,201,0.5)',
+            backdropFilter: 'blur(8px)',
+          }}
+        >
+          ← Kembali
+        </motion.div>
       </motion.div>
 
       {/* Section header */}
       <motion.div
         className="text-center mb-12 mt-4"
-        variants={sectionTitle}
-        initial="initial"
-        animate="animate"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
       >
-        <p
-          className="text-xs tracking-widest uppercase mb-2"
-          style={{ color: '#e75480', letterSpacing: '0.2em', fontFamily: 'Inter, sans-serif' }}
-        >
+        <p className="text-xs tracking-widest uppercase mb-2"
+          style={{ color: '#e75480', letterSpacing: '0.2em', fontFamily: 'Inter, sans-serif' }}>
           ✦ scrapbook ✦
         </p>
-        <h1
-          style={{
-            fontFamily: 'Playfair Display, serif',
-            fontSize: 'clamp(1.8rem, 5vw, 2.8rem)',
-            color: '#4a3728',
-            fontWeight: 700,
-          }}
-        >
+        <h1 style={{
+          fontFamily: 'Playfair Display, serif',
+          fontSize: 'clamp(1.8rem, 5vw, 2.8rem)',
+          color: '#4a3728',
+          fontWeight: 700,
+        }}>
           ~ momen indah bersamamu ~
         </h1>
-        <p
-          className="mt-2 opacity-60"
-          style={{ fontFamily: 'Caveat, cursive', fontSize: '17px', color: '#7a6155' }}
-        >
+        <p className="mt-2 opacity-60"
+          style={{ fontFamily: 'Caveat, cursive', fontSize: '17px', color: '#7a6155' }}>
           klik foto buat lihat lebih dekat 💗
         </p>
       </motion.div>
@@ -120,6 +104,7 @@ export default function GalleryPage() {
             rotation={ROTATIONS[i % ROTATIONS.length]}
             delay={i * 0.07}
             onClick={() => openLightbox(i)}
+            index={i}
           />
         ))}
       </div>
@@ -132,25 +117,24 @@ export default function GalleryPage() {
         className="text-center pb-24"
       >
         <p style={{ fontFamily: 'Dancing Script, cursive', fontSize: '22px', color: '#e75480', opacity: 0.7 }}>
-          "Kamu adalah rumah yang aku rindukan." 💗
+          &ldquo;Kamu adalah rumah yang aku rindukan.&rdquo; 💗
         </p>
         <div className="mt-6 flex justify-center gap-3">
-          <Link href="/ucapan">
-            <motion.button
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.97 }}
-              className="px-6 py-3 rounded-full font-medium"
-              style={{
-                background: 'linear-gradient(135deg, #e75480, #f9a8c9)',
-                color: 'white',
-                fontFamily: 'Caveat, cursive',
-                fontSize: '18px',
-                boxShadow: '0 4px 15px rgba(231,84,128,0.3)',
-              }}
-            >
-              💌 Baca Pesan Panjang
-            </motion.button>
-          </Link>
+          <motion.div
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => router.push('/ucapan')}
+            className="px-6 py-3 rounded-full font-medium cursor-pointer"
+            style={{
+              background: 'linear-gradient(135deg, #e75480, #f9a8c9)',
+              color: 'white',
+              fontFamily: 'Caveat, cursive',
+              fontSize: '18px',
+              boxShadow: '0 4px 15px rgba(231,84,128,0.3)',
+            }}
+          >
+            💌 Baca Pesan Panjang
+          </motion.div>
         </div>
       </motion.div>
 
